@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EB Calculator - 4 Shop Sub Meter</title>
+<style>
+*{box-sizing:border-box}
+:root{--blue:#2457e6;--dark:#14213d;--bg:#f4f6fa;--card:#fff;--line:#e1e5ed;--muted:#687386;--green:#15956b;--red:#d94a4a}
+body{margin:0;background:var(--bg);color:#172033;font-family:Arial,Helvetica,sans-serif}
+.container{max-width:1100px;margin:auto;padding:16px}
+.header{background:linear-gradient(135deg,#14213d,#2457e6);color:#fff;padding:22px;border-radius:20px;margin-bottom:16px}
+.header h1{margin:0 0 5px;font-size:28px}.header p{margin:0;opacity:.85;font-size:14px}
+.buttons{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer}
+.primary{background:#fff;color:#2457e6}.dark{background:#14213d;color:#fff}.light{background:#edf1f7;color:#263247}.danger{color:var(--red)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:17px;margin-bottom:16px}
+h2{font-size:18px;margin:0 0 14px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.row{display:flex;gap:12px;flex-wrap:wrap}.field{flex:1;min-width:150px}
+label{display:block;font-size:12px;color:var(--muted);font-weight:bold;margin-bottom:5px}
+input{width:100%;padding:11px;border:1px solid #d8dee8;border-radius:9px;font-size:15px}
+input:focus{outline:2px solid #2457e622;border-color:var(--blue)}
+.shop h3{margin:0 0 12px;font-size:17px}.shop{box-shadow:0 4px 16px #1720330b}
+.result{background:#f0f4ff;border-radius:10px;padding:11px;margin-top:10px}
+.units{font-size:20px;font-weight:800}.amount{font-size:13px;color:var(--muted);margin-top:4px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+.stat span{display:block;color:var(--muted);font-size:12px;font-weight:bold}.stat b{display:block;font-size:20px;margin-top:5px}
+.positive{color:var(--green)}.negative{color:var(--red)}
+.tablewrap{overflow:auto}table{width:100%;min-width:760px;border-collapse:collapse}
+th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size:13px}th{font-size:11px;color:var(--muted)}
+.small{font-size:12px;color:var(--muted);line-height:1.55}
+.auto{background:#eaf8f2;border:1px solid #c9eadc;color:#146b51;padding:10px;border-radius:10px;font-size:12px;margin-top:10px}.share-btn{background:#15956b;color:#fff;width:100%;margin-top:10px}.share-note{background:#fff8e7;border:1px solid #f0dca8;color:#755a18;padding:10px;border-radius:10px;font-size:12px;margin-top:10px}.payment-page{max-width:560px;margin:24px auto}.payment-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 10px 35px #17203312}.payment-amount{font-size:42px;font-weight:900;margin:10px 0}.payment-pay{background:#2457e6;color:#fff;width:100%;font-size:17px;margin-top:14px}.payment-whatsapp{background:#15956b;color:#fff;width:100%;font-size:15px;margin-top:10px}
+@media(max-width:800px){.grid,.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.grid,.stats{grid-template-columns:1fr}.container{padding:10px}.header{padding:18px}.header h1{font-size:23px}}
+
+.login-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#101a35,#2457e6);display:flex;align-items:center;justify-content:center;padding:20px}.login-card{width:min(390px,100%);background:#fff;border-radius:24px;padding:28px;box-shadow:0 25px 70px #0005;text-align:center}.login-logo{width:62px;height:62px;border-radius:18px;background:#2457e6;color:#fff;display:grid;place-items:center;margin:0 auto 15px;font-size:27px;font-weight:900}.login-card h1{margin:0 0 7px;font-size:25px;color:#14213d}.login-card p{margin:0 0 20px;color:#687386;font-size:13px}.mpin{width:100%;text-align:center;letter-spacing:9px;font-size:25px;font-weight:800;padding:14px;border:1px solid #d8dee8;border-radius:12px}.login-btn{width:100%;margin-top:13px;background:#2457e6;color:#fff;font-size:15px}.login-error{height:20px;color:#d94a4a;font-size:12px;margin-top:9px;font-weight:700}.logout-btn{margin-left:auto;background:#fff;color:#d94a4a}@media(max-width:520px){.login-card{padding:23px}}
+</style>
+
+<script>
+window.EB_CLOUD = {
+  api: "https://script.google.com/macros/s/AKfycbxY3x-zNSKOzNOJJC9WOfiQ62_kIMvQ82azhJo00fdhST9w2ARG6HD5We1z7X_41UH7/exec",
+  sheetId: "1-Dr4JNT5VJgQlGTlizX-Wymmwc8e8HBB"
+};
+</script>
+</head>
+<body>
+<div id="cloudStatus" style="position:fixed;bottom:10px;right:10px;z-index:5000;
+background:#fff;border:1px solid #dfe5ef;border-radius:999px;padding:7px 12px;
+font:12px Arial;color:#687386;box-shadow:0 4px 16px #0001">☁ Cloud database</div>
+
+<div class="login-screen" id="loginScreen"><div class="login-card"><div class="login-logo">₹</div><h1>EB Calculator</h1><p>Enter your 6-digit MPIN to continue</p><input id="mpin" class="mpin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••••" aria-label="6 digit MPIN"><button class="login-btn" onclick="login()">Login</button><div class="login-error" id="loginError"></div></div></div>
+
+<div id="ownerApp">
+<div class="container">
+
+<div class="header">
+  <h1>EB Calculator</h1>
+  <p>4 Shop Sub-Meter • Automatic Previous Month → Next Month Reading</p>
+  <div class="buttons">
+    <button class="primary" onclick="calculate()">Calculate</button>
+    <button class="dark" onclick="saveMonth()">Save This Month</button>
+    <button class="light" onclick="newNextMonth()">Create Next Month</button>
+    <button class="light" onclick="clearCurrent()">Clear Current</button><button class="logout-btn" onclick="logout()">Lock</button>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Billing Month & EB Details</h2>
+  <div class="row">
+    <div class="field">
+      <label>Billing Month</label>
+      <input id="month" type="month">
+    </div>
+    <div class="field">
+      <label>Shop Rate per Unit (₹)</label>
+      <input id="rate" type="number" min="0" step="0.01" value="14" oninput="calculate()">
+    </div>
+    <div class="field">
+      <label>Common / Other Charge (₹)</label>
+      <input id="common" type="number" min="0" step="0.01" value="0" oninput="calculate()">
+    </div>
+  </div>
+  <div class="auto">
+    <b>Automatic meter feature:</b> When you save a month, each shop's <b>Current Reading</b> becomes the <b>Last Reading</b> automatically for the next month.
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Bill Sharing & Payment Link</h2>
+  <div class="row">
+    <div class="field">
+      <label>Business / Collection Name</label>
+      <input id="businessName" type="text" value="EB Sub-Meter Bill" oninput="autoSaveCurrent()">
+    </div>
+  </div>
+  <div class="share-note"><b>How it works:</b> Tap <b>Share Bill</b> for a shop. The bill image and a unique payment URL are shared to WhatsApp. The sub-meter user opens the URL, sees only their bill, taps <b>Pay Now</b>, pays through UPI, then can send the payment screenshot to the owner on WhatsApp.</div>
+  <div class="small" style="margin-top:10px"><b>UPI payment address:</b> kishorekish2000rk@oksbi</div>
+</div>
+
+<div class="panel">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+    <h2 style="margin:0">Shop Sub-Meters</h2>
+    <button class="primary" onclick="addShop()" style="background:#2457e6;color:#fff">＋ Add Shop</button>
+  </div>
+  <p class="small" style="margin:8px 0 14px">Start with 4 shops. Use <b>＋ Add Shop</b> whenever you need another shop. New shops are included automatically in monthly calculations.</p>
+  <div class="grid" id="shops"></div>
+</div>
+
+<div class="panel">
+  <h2>Real EB Bill From SMS / Main Meter</h2>
+  <div class="row">
+    <div class="field">
+      <label>Real EB Bill Amount (₹)</label>
+      <input id="mainBill" type="number" min="0" step="0.01" value="0" oninput="calculate()">
+    </div>
+    <div class="field">
+      <label>Main Meter Units (optional)</label>
+      <input id="mainUnits" type="number" min="0" step="1" value="0" oninput="calculate()">
+    </div>
+  </div>
+  <p class="small">Enter the actual EB bill amount received by SMS. The calculator subtracts the four shop sub-meter charges from the real EB amount.</p>
+</div>
+
+<div class="stats">
+  <div class="stat"><span>Total Shop Units</span><b id="totalUnits">0</b></div>
+  <div class="stat"><span>Shop Sub-Meter Amount</span><b id="shopAmount">₹0.00</b></div>
+  <div class="stat"><span>Real EB Bill</span><b id="realBill">₹0.00</b></div>
+  <div class="stat"><span>EB Balance After Shops</span><b id="balance">₹0.00</b></div>
+</div>
+
+<div class="panel" style="margin-top:16px">
+  <h2>Final Main Meter Calculation</h2>
+  <div class="stats">
+    <div class="stat"><span>Shop + Common</span><b id="shopCommon">₹0.00</b></div>
+    <div class="stat"><span>Difference / Main Share</span><b id="difference">₹0.00</b></div>
+    <div class="stat"><span>Main Effective Rate</span><b id="effectiveRate">—</b></div>
+    <div class="stat"><span>Check</span><b id="check">Enter SMS Bill</b></div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Saved Monthly Records</h2>
+  <div class="tablewrap" id="history"></div>
+  <p class="small">Saved records are kept in this browser for 30 days. The automatic next-month reading is taken from the saved previous month's current reading. Export your data if you want a permanent backup.</p>
+  <div class="buttons">
+    <button class="dark" onclick="exportData()">Export Backup</button>
+    <button class="light" onclick="document.getElementById('importFile').click()">Import Backup</button>
+    <button class="light danger" onclick="deleteAll()">Delete All</button>
+  </div>
+</div>
+
+<input id="importFile" type="file" accept=".json" hidden>
+
+</div>
+
+</div>
+<script>
+
+const MPIN="151515";
+function login(){const input=document.getElementById("mpin"),error=document.getElementById("loginError");if(input.value===MPIN){sessionStorage.setItem("eb_authenticated","1");document.getElementById("loginScreen").style.display="none";input.value="";error.textContent="";}else{error.textContent="Incorrect MPIN. Please try again.";input.value="";input.focus();}}
+function logout(){sessionStorage.removeItem("eb_authenticated");document.getElementById("loginScreen").style.display="flex";document.getElementById("mpin").value="";document.getElementById("loginError").textContent="";document.getElementById("mpin").focus();}
+document.addEventListener("DOMContentLoaded",()=>{const input=document.getElementById("mpin");if(sessionStorage.getItem("eb_authenticated")==="1"){document.getElementById("loginScreen").style.display="none";}else{setTimeout(()=>input.focus(),100);}input.addEventListener("keydown",e=>{if(e.key==="Enter")login()});input.addEventListener("input",()=>{input.value=input.value.replace(/\D/g,"").slice(0,6)});});
+
+const KEY="eb4shop_records_v4";
+const CURRENT="eb4shop_current_v4";
+let shops=[
+  {name:"Shop 1",last:"",current:""},
+  {name:"Shop 2",last:"",current:""},
+  {name:"Shop 3",last:"",current:""},
+  {name:"Shop 4",last:"",current:""}
+];
+
+function money(x){
+  return "₹"+Number(x||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function todayMonth(){
+  const d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
+}
+function nextMonthValue(month){
+  let [y,m]=month.split("-").map(Number);
+  m++;
+  if(m===13){m=1;y++}
+  return y+"-"+String(m).padStart(2,"0");
+}
+function previousMonthValue(month){
+  let [y,m]=month.split("-").map(Number);
+  m--;
+  if(m===0){m=12;y--}
+  return y+"-"+String(m).padStart(2,"0");
+}
+function render(){
+  const box=document.getElementById("shops");
+  box.innerHTML="";
+  shops.forEach((s,i)=>{
+    box.innerHTML+=`
+    <div class="panel shop" style="position:relative">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <h3 style="margin:0 0 12px">${escapeHtml(s.name)}</h3>
+        ${shops.length>4 ? `<button class="light danger" style="padding:7px 10px;margin-bottom:10px" onclick="removeShop(${i})">− Remove</button>` : ""}
+      </div>
+      <div class="field">
+        <label>Shop Name</label>
+        <input type="text" value="${escapeAttr(s.name)}" oninput="shops[${i}].name=this.value||'Shop ${i+1}';autoSaveCurrent()">
+      </div>
+      <div class="field">
+        <label>Last Meter Reading</label>
+        <input type="number" min="0" step="1" value="${s.last}"
+          oninput="shops[${i}].last=this.value;calculate()">
+      </div>
+      <div class="field">
+        <label>Current Meter Reading</label>
+        <input type="number" min="0" step="1" value="${s.current}"
+          oninput="shops[${i}].current=this.value;calculate()">
+      </div>
+      <div class="result">
+        <div class="units" id="u${i}">0 units</div>
+        <div class="amount" id="a${i}">0 × ₹0 = ₹0.00</div>
+      </div>
+      <button class="share-btn" type="button" onclick="shareBill(${i})">📤 Share Bill</button>
+    </div>`;
+  });
+  calculate();
+}
+function escapeHtml(v){
+  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function escapeAttr(v){ return escapeHtml(v); }
+function addShop(){
+  const n=shops.length+1;
+  shops.push({name:"Shop "+n,last:"",current:""});
+  render();
+  setTimeout(()=>{
+    const inputs=document.querySelectorAll("#shops input[type=text]");
+    if(inputs.length) inputs[inputs.length-1].focus();
+  },50);
+}
+function removeShop(i){
+  if(shops.length<=4){
+    alert("The first 4 shops cannot be removed.");
+    return;
+  }
+  if(!confirm("Remove "+shops[i].name+" from the calculator?")) return;
+  shops.splice(i,1);
+  render();
+}
+function calculate(){
+  const rate=Number(document.getElementById("rate").value)||0;
+  const common=Number(document.getElementById("common").value)||0;
+  const real=Number(document.getElementById("mainBill").value)||0;
+  const mainUnits=Number(document.getElementById("mainUnits").value)||0;
+  let totalUnits=0,totalShop=0;
+
+  shops.forEach((s,i)=>{
+    const last=Number(s.last)||0;
+    const current=Number(s.current)||0;
+    const units=Math.max(0,current-last);
+    const amount=units*rate;
+    totalUnits+=units;
+    totalShop+=amount;
+    document.getElementById("u"+i).textContent=units+" units";
+    document.getElementById("a"+i).textContent=`${units} × ${money(rate)} = ${money(amount)}`;
+  });
+
+  const shopCommon=totalShop+common;
+  const balance=real-totalShop;
+  const difference=real-shopCommon;
+  const eff=mainUnits>0 ? real/mainUnits : 0;
+
+  document.getElementById("totalUnits").textContent=totalUnits;
+  document.getElementById("shopAmount").textContent=money(totalShop);
+  document.getElementById("realBill").textContent=money(real);
+  document.getElementById("balance").textContent=money(balance);
+  document.getElementById("shopCommon").textContent=money(shopCommon);
+  document.getElementById("difference").textContent=money(difference);
+  document.getElementById("effectiveRate").textContent=mainUnits>0 ? money(eff)+"/unit" : "—";
+
+  const check=document.getElementById("check");
+  if(real<=0){check.textContent="Enter SMS Bill";check.className=""}
+  else if(difference>=0){check.textContent="₹"+difference.toFixed(2)+" main/common";check.className="positive"}
+  else{check.textContent=money(Math.abs(difference))+" over";check.className="negative"}
+
+  autoSaveCurrent();
+}
+function autoSaveCurrent(){
+  const data={
+    savedAt:Date.now(),
+    month:document.getElementById("month").value,
+    rate:Number(document.getElementById("rate").value)||0,
+    common:Number(document.getElementById("common").value)||0,
+    mainBill:Number(document.getElementById("mainBill").value)||0,
+    mainUnits:Number(document.getElementById("mainUnits").value)||0,
+    businessName:document.getElementById("businessName")?.value||"EB Sub-Meter Bill",
+    upiId:"kishorekish2000rk@oksbi",
+    shops:shops
+  };
+  localStorage.setItem(CURRENT,JSON.stringify(data));
+}
+function saveMonth(){
+  calculate();
+  const month=document.getElementById("month").value;
+  if(!month){alert("Please select a billing month.");return}
+
+  let records=getRecords();
+  const record={
+    id:Date.now(),
+    savedAt:Date.now(),
+    month:month,
+    rate:Number(document.getElementById("rate").value)||0,
+    common:Number(document.getElementById("common").value)||0,
+    mainBill:Number(document.getElementById("mainBill").value)||0,
+    mainUnits:Number(document.getElementById("mainUnits").value)||0,
+    businessName:document.getElementById("businessName")?.value||"EB Sub-Meter Bill",
+    upiId:"kishorekish2000rk@oksbi",
+    shops:JSON.parse(JSON.stringify(shops))
+  };
+
+  const index=records.findIndex(r=>r.month===month);
+  if(index>=0) records[index]=record;
+  else records.unshift(record);
+
+  localStorage.setItem(KEY,JSON.stringify(records));
+  cleanup();
+
+  // IMPORTANT: immediately prepare next month using current readings as next month's last readings
+  prepareNextMonthFrom(record);
+
+  renderHistory();
+  alert("Saved "+month+". Next month is prepared automatically with previous current readings as last readings.");
+}
+function prepareNextMonthFrom(record){
+  const next=nextMonthValue(record.month);
+  document.getElementById("month").value=next;
+
+  shops=record.shops.map((s,i)=>({
+    name:s.name || "Shop "+(i+1),
+    last:s.current || "",
+    current:""
+  }));
+
+  // Keep rate, but new month's bill values start empty.
+  document.getElementById("mainBill").value=0;
+  document.getElementById("mainUnits").value=0;
+  document.getElementById("common").value=0;
+
+  localStorage.setItem(CURRENT,JSON.stringify({
+    savedAt:Date.now(),
+    month:next,
+    rate:Number(document.getElementById("rate").value)||0,
+    common:0,
+    mainBill:0,
+    mainUnits:0,
+    shops:shops
+  }));
+  render();
+}
+function newNextMonth(){
+  const current=document.getElementById("month").value||todayMonth();
+  const next=nextMonthValue(current);
+  const records=getRecords();
+  const previous=records.find(r=>r.month===current) || records.find(r=>r.month===previousMonthValue(next));
+
+  if(previous){
+    document.getElementById("month").value=next;
+    shops=previous.shops.map((s,i)=>({name:s.name||"Shop "+(i+1),last:s.current||"",current:""}));
+    document.getElementById("rate").value=previous.rate;
+    document.getElementById("common").value=0;
+    document.getElementById("mainBill").value=0;
+    document.getElementById("mainUnits").value=0;
+    render();
+  }else{
+    document.getElementById("month").value=next;
+    shops=[
+  {name:"Shop 1",last:"",current:""},
+  {name:"Shop 2",last:"",current:""},
+  {name:"Shop 3",last:"",current:""},
+  {name:"Shop 4",last:"",current:""}
+];
+    render();
+  }
+}
+function loadRecord(id){
+  const r=getRecords().find(x=>x.id===id);
+  if(!r)return;
+  document.getElementById("month").value=r.month;
+  document.getElementById("rate").value=r.rate;
+  document.getElementById("common").value=r.common;
+  document.getElementById("mainBill").value=r.mainBill||0;
+  document.getElementById("mainUnits").value=r.mainUnits||0;
+  document.getElementById("businessName").value=r.businessName||"EB Sub-Meter Bill";
+  
+  shops=JSON.parse(JSON.stringify(r.shops));
+  render();
+}
+function getRecords(){
+  cleanup();
+  return JSON.parse(localStorage.getItem(KEY)||"[]");
+}
+function cleanup(){
+  let records=JSON.parse(localStorage.getItem(KEY)||"[]");
+  records=records.filter(r=>Date.now()-r.savedAt<=30*24*60*60*1000);
+  localStorage.setItem(KEY,JSON.stringify(records));
+}
+function renderHistory(){
+  const box=document.getElementById("history");
+  const records=getRecords();
+  if(!records.length){
+    box.innerHTML='<p class="small">No saved months yet.</p>';
+    return;
+  }
+  let rows=records.map(r=>{
+    let units=r.shops.reduce((sum,s)=>sum+Math.max(0,(Number(s.current)||0)-(Number(s.last)||0)),0);
+    let sub=units*r.rate;
+    return `<tr>
+      <td><b>${r.month}</b></td>
+      <td>${units}</td>
+      <td>${money(sub)}</td>
+      <td>${money(r.mainBill||0)}</td>
+      <td>${money((r.mainBill||0)-sub)}</td>
+      <td>
+        <button class="light" onclick="loadRecord(${r.id})">Load</button>
+        <button class="light danger" onclick="deleteRecord(${r.id})">Delete</button>
+      </td>
+    </tr>`;
+  }).join("");
+  box.innerHTML=`<table>
+    <thead><tr><th>Month</th><th>Shop Units</th><th>Sub Meter</th><th>Real EB</th><th>Balance</th><th>Action</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+function deleteRecord(id){
+  if(!confirm("Delete this month?"))return;
+  localStorage.setItem(KEY,JSON.stringify(getRecords().filter(r=>r.id!==id)));
+  renderHistory();
+}
+function deleteAll(){
+  if(!confirm("Delete all saved monthly records?"))return;
+  localStorage.removeItem(KEY);
+  renderHistory();
+}
+function clearCurrent(){
+  if(!confirm("Clear current readings?"))return;
+  shops=[
+  {name:"Shop 1",last:"",current:""},
+  {name:"Shop 2",last:"",current:""},
+  {name:"Shop 3",last:"",current:""},
+  {name:"Shop 4",last:"",current:""}
+];
+  document.getElementById("common").value=0;
+  document.getElementById("mainBill").value=0;
+  document.getElementById("mainUnits").value=0;
+  render();
+}
+
+function roundedRect(ctx,x,y,w,h,r){
+  const rr=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+rr,y);ctx.arcTo(x+w,y,x+w,y+h,rr);ctx.arcTo(x+w,y+h,x,y+h,rr);ctx.arcTo(x,y+h,x,y,rr);ctx.arcTo(x,y,x+w,y,rr);ctx.closePath();
+}
+function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines){
+  const words=String(text||"").split(/\s+/);let line="",lines=[];
+  for(const word of words){const test=line?line+" "+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word;if(lines.length===maxLines-1)break;}else line=test;}
+  if(line&&lines.length<maxLines)lines.push(line);
+  lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight));
+  return y+lines.length*lineHeight;
+}
+function loadImage(src){return new Promise((resolve,reject)=>{if(!src)return resolve(null);const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;});}
+function shopBillData(i){
+  const s=shops[i];
+  const rate=Number(document.getElementById("rate").value)||0;
+  const last=Number(s.last)||0,current=Number(s.current)||0;
+  const units=Math.max(0,current-last),amount=units*rate;
+  const month=document.getElementById("month").value||todayMonth();
+  return {shop:s.name||"Shop "+(i+1),last,current,units,rate,amount,month,business:document.getElementById("businessName")?.value||"EB Sub-Meter Bill",upiId:"kishorekish2000rk@oksbi"};
+}
+async function makeBillImage(i){
+  calculate();
+  const d=shopBillData(i);
+  const canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1350;
+  const ctx=canvas.getContext("2d");
+  ctx.fillStyle="#f4f6fa";ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="#14213d";ctx.fillRect(0,0,canvas.width,250);
+  ctx.fillStyle="#fff";ctx.font="bold 50px Arial";ctx.fillText(d.business,70,90);
+  ctx.font="28px Arial";ctx.fillStyle="#dbe5ff";ctx.fillText("SUB-METER ELECTRICITY BILL",70,145);ctx.fillText(d.month,70,195);
+  roundedRect(ctx,55,285,970,340,28);ctx.fillStyle="#fff";ctx.fill();
+  ctx.fillStyle="#687386";ctx.font="bold 24px Arial";ctx.fillText("BILL FOR",90,335);
+  ctx.fillStyle="#14213d";ctx.font="bold 52px Arial";wrapText(ctx,d.shop,90,395,880,62,2);
+  ctx.fillStyle="#687386";ctx.font="24px Arial";ctx.fillText("Meter reading",90,505);ctx.fillText("Units",410,505);ctx.fillText("Rate",650,505);
+  ctx.fillStyle="#14213d";ctx.font="bold 28px Arial";ctx.fillText(`${d.last} → ${d.current}`,90,550);ctx.fillText(String(d.units),410,550);ctx.fillText(money(d.rate)+" / unit",650,550);
+  roundedRect(ctx,55,655,970,185,28);ctx.fillStyle="#eaf8f2";ctx.fill();
+  ctx.fillStyle="#146b51";ctx.font="bold 25px Arial";ctx.fillText("AMOUNT TO PAY",90,715);
+  ctx.fillStyle="#14213d";ctx.font="bold 64px Arial";ctx.fillText(money(d.amount),90,790);
+  roundedRect(ctx,55,870,970,390,28);ctx.fillStyle="#fff";ctx.fill();
+  ctx.fillStyle="#14213d";ctx.font="bold 30px Arial";ctx.fillText("PAY DIRECTLY BY UPI",90,930);
+  ctx.fillStyle="#2457e6";ctx.font="bold 34px Arial";wrapText(ctx,d.upiId,90,995,850,46,2);
+  ctx.fillStyle="#687386";ctx.font="24px Arial";ctx.fillText("Amount",90,1090);
+  ctx.fillStyle="#14213d";ctx.font="bold 42px Arial";ctx.fillText(money(d.amount),90,1140);
+  ctx.fillStyle="#687386";ctx.font="22px Arial";wrapText(ctx,"Open the payment link shared with this bill to pay this exact amount.",90,1190,850,32,2);
+  ctx.fillStyle="#687386";ctx.font="20px Arial";ctx.fillText("Generated from EB Calculator",90,1230);
+  return new Promise(resolve=>canvas.toBlob(blob=>resolve({blob,canvas,data:d}),"image/png"));
+}
+function randomToken(){
+  const bytes=new Uint8Array(24);
+  if(window.crypto&&crypto.getRandomValues) crypto.getRandomValues(bytes);
+  else for(let i=0;i<bytes.length;i++) bytes[i]=Math.floor(Math.random()*256);
+  return Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
+}
+function base64UrlEncode(obj){
+  const json=JSON.stringify(obj);
+  const bytes=new TextEncoder().encode(json);
+  let bin="";bytes.forEach(b=>bin+=String.fromCharCode(b));
+  return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/g,"");
+}
+function base64UrlDecode(str){
+  const b64=str.replace(/-/g,"+").replace(/_/g,"/")+"=".repeat((4-str.length%4)%4);
+  const bin=atob(b64);
+  const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+function paymentUrlForBill(d){
+  // Every Share Bill click creates a new high-entropy, single-link token.
+  // On Vercel this becomes an HTTPS URL automatically.
+  const token=randomToken();
+  const expiresAt=Date.now()+30*24*60*60*1000;
+  const payload={shop:d.shop,last:d.last,current:d.current,units:d.units,rate:d.rate,amount:Number(d.amount.toFixed(2)),month:d.month,business:d.business,upi:d.upiId,owner:"919361413481",token,expiresAt};
+  let base;
+  if(location.hostname && location.hostname!="localhost" && location.protocol==="https:") base="https://"+location.host+location.pathname;
+  else base=location.origin+location.pathname;
+  return base+"?pay=1&token="+encodeURIComponent(token)+"&bill="+encodeURIComponent(base64UrlEncode(payload));
+}
+async function shareBill(i){
+  try{
+    const result=await makeBillImage(i);if(!result||!result.blob)return;
+    if(!result.data.amount || result.data.amount<=0){alert("Enter the current meter reading first.");return;}
+    const paymentUrl=paymentUrlForBill(result.data);
+    const filename=`${result.data.shop.replace(/[^a-z0-9_-]+/gi,"_")}-${result.data.month}-EB-Bill.png`;
+    const file=new File([result.blob],filename,{type:"image/png"});
+    const shareText=`${result.data.shop} EB Bill\nAmount to pay: ${money(result.data.amount)}\n\nOpen this payment link to pay by UPI:\n${paymentUrl}`;
+    if(navigator.share){
+      const canShareFiles=!navigator.canShare || navigator.canShare({files:[file]});
+      if(canShareFiles){
+        await navigator.share({title:`${result.data.shop} EB Bill`,text:shareText,files:[file]});
+      }else{
+        await navigator.share({title:`${result.data.shop} EB Bill`,text:shareText});
+      }
+    }else{
+      const url=URL.createObjectURL(result.blob);const a=document.createElement("a");a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+      prompt("Copy this payment link and send it with the bill image on WhatsApp:",paymentUrl);
+    }
+  }catch(err){if(err&&err.name!=="AbortError")alert("Could not create/share the bill. Please try again.");}
+}
+function showPaymentPage(){
+  const p=new URLSearchParams(window.location.search);
+  if(p.get("pay")!=="1")return false;
+  let d;
+  try{
+    d=base64UrlDecode(p.get("bill")||"");
+    if(!d || !d.token || d.token!==p.get("token")) throw new Error("Invalid payment link");
+    if(!d.expiresAt || Date.now()>Number(d.expiresAt)) throw new Error("This payment link has expired");
+  }catch(e){
+    document.body.innerHTML=`<main class="payment-page"><div class="payment-card"><h1>Payment link unavailable</h1><p class="small">This bill link is invalid or expired. Please ask the owner to send a new bill link.</p></div></main>`;
+    return true;
+  }
+  d.shop=d.shop||"Sub-Meter User";d.business=d.business||"EB Sub-Meter Bill";d.upi=d.upi||"kishorekish2000rk@oksbi";
+  window.paymentBillData=d;
+  document.getElementById("loginScreen").style.display="none";
+  document.getElementById("ownerApp").style.display="none";
+  document.body.innerHTML=`
+  <main class="payment-page">
+    <div class="payment-card">
+      <div class="small">${escapeHtml(d.business)}</div>
+      <h1 style="margin:7px 0 4px;color:#14213d">Sub-Meter Electricity Bill</h1>
+      <div class="small">Billing month: ${escapeHtml(d.month)}</div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+      <div class="small">Bill for</div>
+      <h2 style="font-size:25px;margin:5px 0 14px">${escapeHtml(d.shop)}</h2>
+      <div class="row">
+        <div><div class="small">Meter</div><b>${d.last} → ${d.current}</b></div>
+        <div><div class="small">Units</div><b>${d.units}</b></div>
+        <div><div class="small">Rate</div><b>${money(d.rate)} / unit</b></div>
+      </div>
+      <div style="margin-top:20px;background:#eaf8f2;border-radius:14px;padding:18px">
+        <div class="small">Amount to pay</div>
+        <div class="payment-amount">${money(d.amount)}</div>
+        <div class="small">UPI: ${escapeHtml(d.upi)}</div>
+      </div>
+      <button class="payment-pay" onclick="payFromPaymentPage()">💳 Pay Now</button>
+      <button class="payment-whatsapp" onclick="sendScreenshotToOwner()">📲 Send Payment Screenshot to Owner</button>
+      <p class="small" style="margin-top:13px">After completing payment, use the WhatsApp button to send your payment screenshot to the owner.</p>
+    </div>
+  </main>`;
+  return true;
+}
+function payFromPaymentPage(){
+  const d=window.paymentBillData;
+  const params=new URLSearchParams({pa:d.upi,pn:d.business||"EB Sub-Meter Bill",am:d.amount.toFixed(2),cu:"INR",tn:`${d.shop} ${d.month} EB Bill`});
+  window.location.href=`upi://pay?${params.toString()}`;
+}
+function sendScreenshotToOwner(){
+  const d=window.paymentBillData;
+  const owner="919361413481";
+  const text=`Payment completed for ${d.shop}\nBill amount: ${money(d.amount)}\nMonth: ${d.month}\nPlease find my payment screenshot attached.`;
+  window.location.href=`https://wa.me/${owner}?text=${encodeURIComponent(text)}`;
+}
+
+function exportData(){
+  const data={
+    records:getRecords(),
+    current:JSON.parse(localStorage.getItem(CURRENT)||"null"),
+    upiId:"kishorekish2000rk@oksbi",
+    exportedAt:new Date().toISOString()
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="eb-calculator-backup.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+document.getElementById("importFile").addEventListener("change",function(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(){
+    try{
+      const data=JSON.parse(reader.result);
+      if(data.records)localStorage.setItem(KEY,JSON.stringify(data.records));
+      if(data.current)localStorage.setItem(CURRENT,JSON.stringify(data.current));
+
+      loadCurrent();
+      renderHistory();
+      alert("Backup imported successfully.");
+    }catch(err){alert("Invalid backup file.");}
+  };
+  reader.readAsText(file);
+});
+function loadCurrent(){
+  const saved=JSON.parse(localStorage.getItem(CURRENT)||"null");
+  if(saved && Date.now()-saved.savedAt<=30*24*60*60*1000){
+    document.getElementById("month").value=saved.month||todayMonth();
+    document.getElementById("rate").value=saved.rate??14;
+    document.getElementById("common").value=saved.common??0;
+    document.getElementById("mainBill").value=saved.mainBill??0;
+    document.getElementById("mainUnits").value=saved.mainUnits??0;
+    if(document.getElementById("businessName")) document.getElementById("businessName").value=saved.businessName||"EB Sub-Meter Bill";
+    
+    shops=saved.shops||shops;
+    if(!Array.isArray(shops)||shops.length<4){
+      while(shops.length<4) shops.push({name:"Shop "+(shops.length+1),last:"",current:""});
+    }
+  }else{
+    document.getElementById("month").value=todayMonth();
+  }
+  if(shops.length!==4)shops=[
+  {name:"Shop 1",last:"",current:""},
+  {name:"Shop 2",last:"",current:""},
+  {name:"Shop 3",last:"",current:""},
+  {name:"Shop 4",last:"",current:""}
+];
+  render();
+}
+document.getElementById("month").addEventListener("change",function(){
+  // If the selected month has a saved record, offer its values; otherwise retain current values.
+  const r=getRecords().find(x=>x.month===this.value);
+  if(r)loadRecord(r.id); else autoSaveCurrent();
+});
+if(!showPaymentPage()){
+  loadCurrent();
+  renderHistory();
+}
+</script>
+
+<script>
+(function(){
+  const API = window.EB_CLOUD.api;
+  const CLOUD_KEY = "eb_cloud_state_v2";
+  let cloudBusy = false;
+
+  async function cloudPost(payload){
+    const res = await fetch(API, {
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(payload)
+    });
+    const text = await res.text();
+    try { return JSON.parse(text); }
+    catch(e){ throw new Error("Cloud API returned invalid response."); }
+  }
+
+  async function loadCloud(){
+    if(cloudBusy) return null;
+    cloudBusy = true;
+    try{
+      const result = await cloudPost({action:"getData"});
+      if(!result || !result.success) throw new Error(result && result.error || "Cloud load failed.");
+      localStorage.setItem(CLOUD_KEY, JSON.stringify(result));
+      window.EB_CLOUD_DATA = result;
+      return result;
+    }catch(err){
+      console.error("Cloud load:", err);
+      return null;
+    }finally{
+      cloudBusy = false;
+    }
+  }
+
+  async function saveCloudCurrent(){
+    if(!window.ebShops || !Array.isArray(window.ebShops)) return;
+    try{
+      await cloudPost({
+        action:"saveCurrent",
+        shops:window.ebShops.map((s,i)=>({
+          shopId:s.shopId || ("shop-"+(i+1)),
+          name:s.name || ("Shop "+(i+1)),
+          last:s.last ?? "",
+          current:s.current ?? ""
+        }))
+      });
+    }catch(err){
+      console.error("Cloud save current:", err);
+    }
+  }
+
+  async function saveCloudMonth(month, extra){
+    if(!window.ebShops || !Array.isArray(window.ebShops)) return null;
+
+    const payload = Object.assign({
+      action:"saveMonth",
+      month:month,
+      shops:window.ebShops.map((s,i)=>({
+        shopId:s.shopId || ("shop-"+(i+1)),
+        name:s.name || ("Shop "+(i+1)),
+        last:s.last ?? "",
+        current:s.current ?? ""
+      }))
+    }, extra || {});
+
+    return await cloudPost(payload);
+  }
+
+  async function createCloudBill(shop, details){
+    const payload = Object.assign({
+      action:"createBill",
+      shopId:shop.shopId,
+      shopName:shop.name,
+      lastReading:Number(shop.last || 0),
+      currentReading:Number(shop.current || 0),
+      units:Math.max(0,Number(shop.current || 0)-Number(shop.last || 0)),
+      rate:Number(details && details.rate || 0),
+      amount:Number(details && details.amount || 0),
+      month:(details && details.month) || ""
+    }, details || {});
+    return await cloudPost(payload);
+  }
+
+  window.EBCloud = {
+    load:loadCloud,
+    saveCurrent:saveCloudCurrent,
+    saveMonth:saveCloudMonth,
+    createBill:createCloudBill
+  };
+
+  // Pull cloud data after the existing UI has initialized.
+  window.addEventListener("load", async function(){
+    const data = await loadCloud();
+    if(!data) return;
+
+    // Keep the same page/UI and update the visible shop state.
+    if(Array.isArray(data.shops) && data.shops.length >= 4){
+      window.ebShops = data.shops.map((s,i)=>({
+        shopId:s.shopId || ("shop-"+(i+1)),
+        name:s.name || ("Shop "+(i+1)),
+        last:s.last ?? "",
+        current:s.current ?? ""
+      }));
+
+      if(typeof window.renderShopsClearly === "function"){
+        window.renderShopsClearly();
+      }
+    }
+  });
+
+  // Cloud-save whenever the existing Add/reading UI changes.
+  const oldSave = window.saveVisibleShops;
+  window.saveVisibleShops = async function(){
+    if(typeof oldSave === "function") oldSave.apply(this,arguments);
+    await saveCloudCurrent();
+  };
+})();
+</script>
+</body>
+</html>
