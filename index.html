@@ -34,52 +34,22 @@ th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size
 @media(max-width:800px){.grid,.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.grid,.stats{grid-template-columns:1fr}.container{padding:10px}.header{padding:18px}.header h1{font-size:23px}}
 
-.login-card{width:min(390px,100%);background:#fff;border-radius:24px;padding:28px;box-shadow:0 25px 70px #0005;text-align:center}.login-logo{width:62px;height:62px;border-radius:18px;background:#2457e6;color:#fff;display:grid;place-items:center;margin:0 auto 15px;font-size:27px;font-weight:900}.login-card h1{margin:0 0 7px;font-size:25px;color:#14213d}.login-card p{margin:0 0 20px;color:#687386;font-size:13px}.mpin{width:100%;text-align:center;letter-spacing:9px;font-size:25px;font-weight:800;padding:14px;border:1px solid #d8dee8;border-radius:12px}.login-btn{width:100%;margin-top:13px;background:#2457e6;color:#fff;font-size:15px}.login-error{height:20px;color:#d94a4a;font-size:12px;margin-top:9px;font-weight:700}.logout-btn{margin-left:auto;background:#fff;color:#d94a4a}@media(max-width:520px){.login-card{padding:23px}}
+.login-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#101a35,#2457e6);display:flex;align-items:center;justify-content:center;padding:20px}.login-card{width:min(390px,100%);background:#fff;border-radius:24px;padding:28px;box-shadow:0 25px 70px #0005;text-align:center}.login-logo{width:62px;height:62px;border-radius:18px;background:#2457e6;color:#fff;display:grid;place-items:center;margin:0 auto 15px;font-size:27px;font-weight:900}.login-card h1{margin:0 0 7px;font-size:25px;color:#14213d}.login-card p{margin:0 0 20px;color:#687386;font-size:13px}.mpin{width:100%;text-align:center;letter-spacing:9px;font-size:25px;font-weight:800;padding:14px;border:1px solid #d8dee8;border-radius:12px}.login-btn{width:100%;margin-top:13px;background:#2457e6;color:#fff;font-size:15px}.login-error{height:20px;color:#d94a4a;font-size:12px;margin-top:9px;font-weight:700}.logout-btn{margin-left:auto;background:#fff;color:#d94a4a}@media(max-width:520px){.login-card{padding:23px}}
 </style>
 
-<style>
-#mpinLoginScreen{
- position:fixed;inset:0;z-index:999999;background:linear-gradient(135deg,#101a35,#2457e6);
- display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;
-}
-#mpinLoginCard{
- width:min(390px,100%);background:#fff;border-radius:24px;padding:28px;
- box-shadow:0 25px 70px rgba(0,0,0,.3);text-align:center;font-family:Arial,sans-serif;
-}
-#mpinLoginCard .mpinLogo{
- width:62px;height:62px;border-radius:18px;background:#2457e6;color:#fff;
- display:grid;place-items:center;margin:0 auto 15px;font-size:27px;font-weight:900;
-}
-#mpinLoginCard h1{margin:0 0 7px;color:#14213d;font-size:25px}
-#mpinLoginCard p{margin:0 0 20px;color:#687386;font-size:13px}
-#mpinInput{
- width:100%;box-sizing:border-box;text-align:center;letter-spacing:9px;font-size:25px;
- font-weight:800;padding:14px;border:1px solid #d8dee8;border-radius:12px;outline:none;
-}
-#mpinLoginButton{
- width:100%;margin-top:13px;background:#2457e6;color:#fff;border:0;border-radius:12px;
- padding:14px;font-size:15px;font-weight:800;cursor:pointer;
-}
-#mpinError{min-height:20px;color:#d94a4a;font-size:12px;margin-top:9px;font-weight:700}
-</style>
+<script>
+window.EB_CLOUD = {
+  api: "https://script.google.com/macros/s/AKfycbxY3x-zNSKOzNOJJC9WOfiQ62_kIMvQ82azhJo00fdhST9w2ARG6HD5We1z7X_41UH7/exec",
+  sheetId: "1-Dr4JNT5VJgQlGTlizX-Wymmwc8e8HBB"
+};
+</script>
 </head>
 <body>
-<div id="mpinLoginScreen">
-  <div id="mpinLoginCard">
-    <div class="mpinLogo">₹</div>
-    <h1>EB Calculator</h1>
-    <p>Enter your 6-digit MPIN to continue</p>
-    <form id="mpinLoginForm" autocomplete="off">
-      <input id="mpinInput" type="password" inputmode="numeric" pattern="[0-9]*"
-             maxlength="6" autocomplete="off" autocorrect="off" spellcheck="false"
-             placeholder="••••••" aria-label="6 digit MPIN">
-      <button id="mpinLoginButton" type="submit">Login</button>
-      <div id="mpinError"></div>
-    </form>
-  </div>
-</div>
+<div id="cloudStatus" style="position:fixed;bottom:10px;right:10px;z-index:5000;
+background:#fff;border:1px solid #dfe5ef;border-radius:999px;padding:7px 12px;
+font:12px Arial;color:#687386;box-shadow:0 4px 16px #0001">☁ Cloud database</div>
 
-</div>
+<div class="login-screen" id="loginScreen"><div class="login-card"><div class="login-logo">₹</div><h1>EB Calculator</h1><p>Enter your 6-digit MPIN to continue</p><input id="mpin" class="mpin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••••" aria-label="6 digit MPIN"><button class="login-btn" onclick="login()">Login</button><div class="login-error" id="loginError"></div></div></div>
 
 <div id="ownerApp">
 <div class="container">
@@ -186,21 +156,24 @@ th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size
 
 </div>
 <script>
-const GOOGLE_SHEET_ID = "1-Dr4JNT5VJgQlGTlizX-Wymmwc8e8HBB";
 
+const MPIN="151515";
+function login(){const input=document.getElementById("mpin"),error=document.getElementById("loginError");if(input.value===MPIN){sessionStorage.setItem("eb_authenticated","1");document.getElementById("loginScreen").style.display="none";input.value="";error.textContent="";}else{error.textContent="Incorrect MPIN. Please try again.";input.value="";input.focus();}}
+function logout(){sessionStorage.removeItem("eb_authenticated");document.getElementById("loginScreen").style.display="flex";document.getElementById("mpin").value="";document.getElementById("loginError").textContent="";document.getElementById("mpin").focus();}
+document.addEventListener("DOMContentLoaded",()=>{const input=document.getElementById("mpin");if(sessionStorage.getItem("eb_authenticated")==="1"){document.getElementById("loginScreen").style.display="none";}else{setTimeout(()=>input.focus(),100);}input.addEventListener("keydown",e=>{if(e.key==="Enter")login()});input.addEventListener("input",()=>{input.value=input.value.replace(/\D/g,"").slice(0,6)});});
 
-const API_URL="https://script.google.com/macros/s/AKfycbxY3x-zNSKOzNOJJC9WOfiQ62_kIMvQ82azhJo00fdhST9w2ARG6HD5We1z7X_41UH7/exec"; // Google Apps Script Web App URL
-let CLOUD_TOKEN=sessionStorage.getItem("eb_cloud_token")||"";
-let saveTimer=null;
-async function api(action,data={}){
-  if(!API_URL || API_URL.includes("PASTE_GOOGLE")) throw new Error("Cloud database is not configured. Add your Google Apps Script Web App URL.");
-  const res=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(Object.assign({action,token:CLOUD_TOKEN},data))});
-  const out=await res.json();
-  if(!out.ok) throw new Error(out.error||"Cloud request failed");
-  return out;
+const KEY="eb4shop_records_v4";
+const CURRENT="eb4shop_current_v4";
+let shops=[
+  {name:"Shop 1",last:"",current:""},
+  {name:"Shop 2",last:"",current:""},
+  {name:"Shop 3",last:"",current:""},
+  {name:"Shop 4",last:"",current:""}
+];
+
+function money(x){
+  return "₹"+Number(x||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
 }
-async 
-
 function todayMonth(){
   const d=new Date();
   return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
@@ -310,61 +283,162 @@ function calculate(){
 
   autoSaveCurrent();
 }
-async function autoSaveCurrent(){
-  clearTimeout(saveTimer);
-  if(!CLOUD_TOKEN) return;
-  saveTimer=setTimeout(async()=>{
-    try{
-      const data={savedAt:Date.now(),month:document.getElementById("month").value,rate:Number(document.getElementById("rate").value)||0,common:Number(document.getElementById("common").value)||0,mainBill:Number(document.getElementById("mainBill").value)||0,mainUnits:Number(document.getElementById("mainUnits").value)||0,businessName:document.getElementById("businessName")?.value||"EB Sub-Meter Bill",upiId:"kishorekish2000rk@oksbi",shops:shops};
-      await api("saveCurrent",{data});
-    }catch(e){console.warn(e.message)}
-  },700);
+function autoSaveCurrent(){
+  const data={
+    savedAt:Date.now(),
+    month:document.getElementById("month").value,
+    rate:Number(document.getElementById("rate").value)||0,
+    common:Number(document.getElementById("common").value)||0,
+    mainBill:Number(document.getElementById("mainBill").value)||0,
+    mainUnits:Number(document.getElementById("mainUnits").value)||0,
+    businessName:document.getElementById("businessName")?.value||"EB Sub-Meter Bill",
+    upiId:"kishorekish2000rk@oksbi",
+    shops:shops
+  };
+  localStorage.setItem(CURRENT,JSON.stringify(data));
 }
-async function saveMonth(){
+function saveMonth(){
   calculate();
   const month=document.getElementById("month").value;
   if(!month){alert("Please select a billing month.");return}
-  try{
-    const record={id:String(Date.now()),month,rate:Number(document.getElementById("rate").value)||0,common:Number(document.getElementById("common").value)||0,mainBill:Number(document.getElementById("mainBill").value)||0,mainUnits:Number(document.getElementById("mainUnits").value)||0,businessName:document.getElementById("businessName")?.value||"EB Sub-Meter Bill",upiId:"kishorekish2000rk@oksbi",shops:JSON.parse(JSON.stringify(shops))};
-    const out=await api("saveMonth",{record});
-    const next=out.current;
-    document.getElementById("month").value=next.month;
-    document.getElementById("rate").value=next.rate;
-    document.getElementById("common").value=0;document.getElementById("mainBill").value=0;document.getElementById("mainUnits").value=0;
-    shops=next.shops;render();await renderHistory();
-    alert("Saved "+month+". Next month "+next.month+" is ready with the previous current readings as the new last readings.");
-  }catch(e){alert(e.message)}
+
+  let records=getRecords();
+  const record={
+    id:Date.now(),
+    savedAt:Date.now(),
+    month:month,
+    rate:Number(document.getElementById("rate").value)||0,
+    common:Number(document.getElementById("common").value)||0,
+    mainBill:Number(document.getElementById("mainBill").value)||0,
+    mainUnits:Number(document.getElementById("mainUnits").value)||0,
+    businessName:document.getElementById("businessName")?.value||"EB Sub-Meter Bill",
+    upiId:"kishorekish2000rk@oksbi",
+    shops:JSON.parse(JSON.stringify(shops))
+  };
+
+  const index=records.findIndex(r=>r.month===month);
+  if(index>=0) records[index]=record;
+  else records.unshift(record);
+
+  localStorage.setItem(KEY,JSON.stringify(records));
+  cleanup();
+
+  // IMPORTANT: immediately prepare next month using current readings as next month's last readings
+  prepareNextMonthFrom(record);
+
+  renderHistory();
+  alert("Saved "+month+". Next month is prepared automatically with previous current readings as last readings.");
 }
-async function newNextMonth(){
+function prepareNextMonthFrom(record){
+  const next=nextMonthValue(record.month);
+  document.getElementById("month").value=next;
+
+  shops=record.shops.map((s,i)=>({
+    name:s.name || "Shop "+(i+1),
+    last:s.current || "",
+    current:""
+  }));
+
+  // Keep rate, but new month's bill values start empty.
+  document.getElementById("mainBill").value=0;
+  document.getElementById("mainUnits").value=0;
+  document.getElementById("common").value=0;
+
+  localStorage.setItem(CURRENT,JSON.stringify({
+    savedAt:Date.now(),
+    month:next,
+    rate:Number(document.getElementById("rate").value)||0,
+    common:0,
+    mainBill:0,
+    mainUnits:0,
+    shops:shops
+  }));
+  render();
+}
+function newNextMonth(){
   const current=document.getElementById("month").value||todayMonth();
   const next=nextMonthValue(current);
-  try{
-    const out=await api("getData");
-    const previous=out.records.find(r=>r.month===current)||out.records.find(r=>r.month===previousMonthValue(next));
+  const records=getRecords();
+  const previous=records.find(r=>r.month===current) || records.find(r=>r.month===previousMonthValue(next));
+
+  if(previous){
     document.getElementById("month").value=next;
-    if(previous){shops=previous.shops.map((s,i)=>({name:s.name||"Shop "+(i+1),last:s.current||"",current:""}));document.getElementById("rate").value=previous.rate;}
-    document.getElementById("common").value=0;document.getElementById("mainBill").value=0;document.getElementById("mainUnits").value=0;render();
-  }catch(e){alert(e.message)}
+    shops=previous.shops.map((s,i)=>({name:s.name||"Shop "+(i+1),last:s.current||"",current:""}));
+    document.getElementById("rate").value=previous.rate;
+    document.getElementById("common").value=0;
+    document.getElementById("mainBill").value=0;
+    document.getElementById("mainUnits").value=0;
+    render();
+  }else{
+    document.getElementById("month").value=next;
+    shops=[
+  {name:"Shop 1",last:"",current:""},
+  {name:"Shop 2",last:"",current:""},
+  {name:"Shop 3",last:"",current:""},
+  {name:"Shop 4",last:"",current:""}
+];
+    render();
+  }
 }
-async function loadRecord(id){
-  try{const out=await api("getData");const r=out.records.find(x=>String(x.id)===String(id));if(!r)return;document.getElementById("month").value=r.month;document.getElementById("rate").value=r.rate;document.getElementById("common").value=r.common;document.getElementById("mainBill").value=r.mainBill||0;document.getElementById("mainUnits").value=r.mainUnits||0;if(document.getElementById("businessName"))document.getElementById("businessName").value=r.businessName||"EB Sub-Meter Bill";shops=JSON.parse(JSON.stringify(r.shops));render();}catch(e){alert(e.message)}}
-async function getRecords(){const out=await api("getData");return out.records||[];}
-async function loadCloud(){
-  const out=await api("getData");
-  if(out.current){const saved=out.current;document.getElementById("month").value=saved.month||todayMonth();document.getElementById("rate").value=saved.rate??14;document.getElementById("common").value=saved.common??0;document.getElementById("mainBill").value=saved.mainBill??0;document.getElementById("mainUnits").value=saved.mainUnits??0;if(document.getElementById("businessName"))document.getElementById("businessName").value=saved.businessName||"EB Sub-Meter Bill";shops=saved.shops||shops;}
-  else document.getElementById("month").value=todayMonth();
-  if(!Array.isArray(shops)||shops.length<4)while(shops.length<4)shops.push({name:"Shop "+(shops.length+1),last:"",current:""});
-  render();renderHistoryFrom(out.records||[]);
+function loadRecord(id){
+  const r=getRecords().find(x=>x.id===id);
+  if(!r)return;
+  document.getElementById("month").value=r.month;
+  document.getElementById("rate").value=r.rate;
+  document.getElementById("common").value=r.common;
+  document.getElementById("mainBill").value=r.mainBill||0;
+  document.getElementById("mainUnits").value=r.mainUnits||0;
+  document.getElementById("businessName").value=r.businessName||"EB Sub-Meter Bill";
+  
+  shops=JSON.parse(JSON.stringify(r.shops));
+  render();
 }
-async function renderHistory(){try{const records=await getRecords();renderHistoryFrom(records);}catch(e){console.warn(e.message)}}
-function renderHistoryFrom(records){
+function getRecords(){
+  cleanup();
+  return JSON.parse(localStorage.getItem(KEY)||"[]");
+}
+function cleanup(){
+  let records=JSON.parse(localStorage.getItem(KEY)||"[]");
+  records=records.filter(r=>Date.now()-r.savedAt<=30*24*60*60*1000);
+  localStorage.setItem(KEY,JSON.stringify(records));
+}
+function renderHistory(){
   const box=document.getElementById("history");
-  if(!records.length){box.innerHTML='<p class="small">No saved months yet.</p>';return;}
-  let rows=records.map(r=>{let units=r.shops.reduce((sum,s)=>sum+Math.max(0,(Number(s.current)||0)-(Number(s.last)||0)),0);let sub=units*r.rate;return `<tr><td><b>${r.month}</b></td><td>${units}</td><td>${money(sub)}</td><td>${money(r.mainBill||0)}</td><td>${money((r.mainBill||0)-sub)}</td><td><button class="light" onclick="loadRecord('${String(r.id).replace(/'/g,"\\'")}')">Load</button><button class="light danger" onclick="deleteRecord('${String(r.id).replace(/'/g,"\\'")}')">Delete</button></td></tr>`}).join("");
-  box.innerHTML=`<table><thead><tr><th>Month</th><th>Shop Units</th><th>Sub Meter</th><th>Real EB</th><th>Balance</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`;
+  const records=getRecords();
+  if(!records.length){
+    box.innerHTML='<p class="small">No saved months yet.</p>';
+    return;
+  }
+  let rows=records.map(r=>{
+    let units=r.shops.reduce((sum,s)=>sum+Math.max(0,(Number(s.current)||0)-(Number(s.last)||0)),0);
+    let sub=units*r.rate;
+    return `<tr>
+      <td><b>${r.month}</b></td>
+      <td>${units}</td>
+      <td>${money(sub)}</td>
+      <td>${money(r.mainBill||0)}</td>
+      <td>${money((r.mainBill||0)-sub)}</td>
+      <td>
+        <button class="light" onclick="loadRecord(${r.id})">Load</button>
+        <button class="light danger" onclick="deleteRecord(${r.id})">Delete</button>
+      </td>
+    </tr>`;
+  }).join("");
+  box.innerHTML=`<table>
+    <thead><tr><th>Month</th><th>Shop Units</th><th>Sub Meter</th><th>Real EB</th><th>Balance</th><th>Action</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
 }
-async function deleteRecord(id){if(!confirm("Delete this month?"))return;try{await api("deleteRecord",{id});await renderHistory();}catch(e){alert(e.message)}}
-async function deleteAll(){if(!confirm("Delete all saved monthly records?"))return;try{await api("deleteAll");await renderHistory();}catch(e){alert(e.message)}}
+function deleteRecord(id){
+  if(!confirm("Delete this month?"))return;
+  localStorage.setItem(KEY,JSON.stringify(getRecords().filter(r=>r.id!==id)));
+  renderHistory();
+}
+function deleteAll(){
+  if(!confirm("Delete all saved monthly records?"))return;
+  localStorage.removeItem(KEY);
+  renderHistory();
+}
 function clearCurrent(){
   if(!confirm("Clear current readings?"))return;
   shops=[
@@ -377,7 +451,6 @@ function clearCurrent(){
   document.getElementById("mainBill").value=0;
   document.getElementById("mainUnits").value=0;
   render();
-  autoSaveCurrent();
 }
 
 function roundedRect(ctx,x,y,w,h,r){
@@ -443,34 +516,79 @@ function base64UrlDecode(str){
   const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));
   return JSON.parse(new TextDecoder().decode(bytes));
 }
-async function paymentUrlForBill(d){
-  const out=await api("createBill",{bill:d});
-  const base=location.origin+location.pathname;
-  return base+"?pay=1&token="+encodeURIComponent(out.token);
+function paymentUrlForBill(d){
+  // Every Share Bill click creates a new high-entropy, single-link token.
+  // On Vercel this becomes an HTTPS URL automatically.
+  const token=randomToken();
+  const expiresAt=Date.now()+30*24*60*60*1000;
+  const payload={shop:d.shop,last:d.last,current:d.current,units:d.units,rate:d.rate,amount:Number(d.amount.toFixed(2)),month:d.month,business:d.business,upi:d.upiId,owner:"919361413481",token,expiresAt};
+  let base;
+  if(location.hostname && location.hostname!="localhost" && location.protocol==="https:") base="https://"+location.host+location.pathname;
+  else base=location.origin+location.pathname;
+  return base+"?pay=1&token="+encodeURIComponent(token)+"&bill="+encodeURIComponent(base64UrlEncode(payload));
 }
 async function shareBill(i){
   try{
     const result=await makeBillImage(i);if(!result||!result.blob)return;
-    if(!result.data.amount||result.data.amount<=0){alert("Enter the current meter reading first.");return;}
-    const paymentUrl=await paymentUrlForBill(result.data);
+    if(!result.data.amount || result.data.amount<=0){alert("Enter the current meter reading first.");return;}
+    const paymentUrl=paymentUrlForBill(result.data);
     const filename=`${result.data.shop.replace(/[^a-z0-9_-]+/gi,"_")}-${result.data.month}-EB-Bill.png`;
     const file=new File([result.blob],filename,{type:"image/png"});
-    const shareText=`${result.data.shop} EB Bill\nAmount to pay: ${money(result.data.amount)}\n\nOpen this secure payment link:\n${paymentUrl}`;
-    if(navigator.share){const canShareFiles=!navigator.canShare||navigator.canShare({files:[file]});if(canShareFiles)await navigator.share({title:`${result.data.shop} EB Bill`,text:shareText,files:[file]});else await navigator.share({title:`${result.data.shop} EB Bill`,text:shareText});}
-    else{const url=URL.createObjectURL(result.blob);const a=document.createElement("a");a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);prompt("Copy this secure payment link and send it with the bill image on WhatsApp:",paymentUrl);}
-  }catch(err){if(err&&err.name!=="AbortError")alert(err.message||"Could not create/share the bill.");}
+    const shareText=`${result.data.shop} EB Bill\nAmount to pay: ${money(result.data.amount)}\n\nOpen this payment link to pay by UPI:\n${paymentUrl}`;
+    if(navigator.share){
+      const canShareFiles=!navigator.canShare || navigator.canShare({files:[file]});
+      if(canShareFiles){
+        await navigator.share({title:`${result.data.shop} EB Bill`,text:shareText,files:[file]});
+      }else{
+        await navigator.share({title:`${result.data.shop} EB Bill`,text:shareText});
+      }
+    }else{
+      const url=URL.createObjectURL(result.blob);const a=document.createElement("a");a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+      prompt("Copy this payment link and send it with the bill image on WhatsApp:",paymentUrl);
+    }
+  }catch(err){if(err&&err.name!=="AbortError")alert("Could not create/share the bill. Please try again.");}
 }
-async function showPaymentPage(){
-  const p=new URLSearchParams(window.location.search);if(p.get("pay")!=="1")return false;
+function showPaymentPage(){
+  const p=new URLSearchParams(window.location.search);
+  if(p.get("pay")!=="1")return false;
+  let d;
   try{
-    if(!API_URL||API_URL.includes("PASTE_GOOGLE"))throw new Error("Payment service is not configured.");
-    const res=await fetch(API_URL+"?action=bill&token="+encodeURIComponent(p.get("token")||""));
-    const out=await res.json();if(!out.ok||!out.bill)throw new Error("This bill link is invalid or expired.");
-    const d=out.bill;d.shop=d.shop||"Sub-Meter User";d.business=d.business||"EB Sub-Meter Bill";d.upi=d.upi||"kishorekish2000rk@oksbi";window.paymentBillData=d;
-    document.getElementById("loginScreen").style.display="none";document.getElementById("ownerApp").style.display="none";
-    document.body.innerHTML=`<main class="payment-page"><div class="payment-card"><div class="small">${escapeHtml(d.business)}</div><h1 style="margin:7px 0 4px;color:#14213d">Sub-Meter Electricity Bill</h1><div class="small">Billing month: ${escapeHtml(d.month)}</div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><div class="small">Bill for</div><h2 style="font-size:25px;margin:5px 0 14px">${escapeHtml(d.shop)}</h2><div class="row"><div><div class="small">Meter</div><b>${d.last} → ${d.current}</b></div><div><div class="small">Units</div><b>${d.units}</b></div><div><div class="small">Rate</div><b>${money(d.rate)} / unit</b></div></div><div style="margin-top:20px;background:#eaf8f2;border-radius:14px;padding:18px"><div class="small">Amount to pay</div><div class="payment-amount">${money(d.amount)}</div><div class="small">UPI: ${escapeHtml(d.upi)}</div></div><button class="payment-pay" onclick="payFromPaymentPage()">💳 Pay Now</button><button class="payment-whatsapp" onclick="sendScreenshotToOwner()">📲 Send Payment Screenshot to Owner</button><p class="small" style="margin-top:13px">After completing payment, use the WhatsApp button to send your payment screenshot to the owner.</p></div></main>`;
+    d=base64UrlDecode(p.get("bill")||"");
+    if(!d || !d.token || d.token!==p.get("token")) throw new Error("Invalid payment link");
+    if(!d.expiresAt || Date.now()>Number(d.expiresAt)) throw new Error("This payment link has expired");
+  }catch(e){
+    document.body.innerHTML=`<main class="payment-page"><div class="payment-card"><h1>Payment link unavailable</h1><p class="small">This bill link is invalid or expired. Please ask the owner to send a new bill link.</p></div></main>`;
     return true;
-  }catch(e){document.body.innerHTML=`<main class="payment-page"><div class="payment-card"><h1>Payment link unavailable</h1><p class="small">${escapeHtml(e.message||"This bill link is invalid or expired. Please ask the owner to send a new link.")}</p></div></main>`;return true;}
+  }
+  d.shop=d.shop||"Sub-Meter User";d.business=d.business||"EB Sub-Meter Bill";d.upi=d.upi||"kishorekish2000rk@oksbi";
+  window.paymentBillData=d;
+  document.getElementById("loginScreen").style.display="none";
+  document.getElementById("ownerApp").style.display="none";
+  document.body.innerHTML=`
+  <main class="payment-page">
+    <div class="payment-card">
+      <div class="small">${escapeHtml(d.business)}</div>
+      <h1 style="margin:7px 0 4px;color:#14213d">Sub-Meter Electricity Bill</h1>
+      <div class="small">Billing month: ${escapeHtml(d.month)}</div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+      <div class="small">Bill for</div>
+      <h2 style="font-size:25px;margin:5px 0 14px">${escapeHtml(d.shop)}</h2>
+      <div class="row">
+        <div><div class="small">Meter</div><b>${d.last} → ${d.current}</b></div>
+        <div><div class="small">Units</div><b>${d.units}</b></div>
+        <div><div class="small">Rate</div><b>${money(d.rate)} / unit</b></div>
+      </div>
+      <div style="margin-top:20px;background:#eaf8f2;border-radius:14px;padding:18px">
+        <div class="small">Amount to pay</div>
+        <div class="payment-amount">${money(d.amount)}</div>
+        <div class="small">UPI: ${escapeHtml(d.upi)}</div>
+      </div>
+      <button class="payment-pay" onclick="payFromPaymentPage()">💳 Pay Now</button>
+      <button class="payment-whatsapp" onclick="sendScreenshotToOwner()">📲 Send Payment Screenshot to Owner</button>
+      <p class="small" style="margin-top:13px">After completing payment, use the WhatsApp button to send your payment screenshot to the owner.</p>
+    </div>
+  </main>`;
+  return true;
 }
 function payFromPaymentPage(){
   const d=window.paymentBillData;
@@ -484,176 +602,189 @@ function sendScreenshotToOwner(){
   window.location.href=`https://wa.me/${owner}?text=${encodeURIComponent(text)}`;
 }
 
-async function exportData(){try{const out=await api("getData");const blob=new Blob([JSON.stringify(out,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="eb-calculator-cloud-backup.json";a.click();URL.revokeObjectURL(a.href);}catch(e){alert(e.message)}}
-document.getElementById("importFile").addEventListener("change",function(){alert("Cloud import is disabled in this version. Use Google Sheets as the master database or ask for an admin import tool.");});
-async document.getElementById("month").addEventListener("change",function(){
-  // If the selected month has a saved record, offer its values; otherwise retain current values.
-  getRecords().then(records=>{const r=records.find(x=>x.month===this.value);if(r)loadRecord(r.id);else autoSaveCurrent();}).catch(e=>console.warn(e.message));
+function exportData(){
+  const data={
+    records:getRecords(),
+    current:JSON.parse(localStorage.getItem(CURRENT)||"null"),
+    upiId:"kishorekish2000rk@oksbi",
+    exportedAt:new Date().toISOString()
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="eb-calculator-backup.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+document.getElementById("importFile").addEventListener("change",function(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(){
+    try{
+      const data=JSON.parse(reader.result);
+      if(data.records)localStorage.setItem(KEY,JSON.stringify(data.records));
+      if(data.current)localStorage.setItem(CURRENT,JSON.stringify(data.current));
+
+      loadCurrent();
+      renderHistory();
+      alert("Backup imported successfully.");
+    }catch(err){alert("Invalid backup file.");}
+  };
+  reader.readAsText(file);
 });
-(async()=>{
-  if(await showPaymentPage()) return;
-  if(CLOUD_TOKEN){
-    try{document.getElementById("loginScreen").style.display="none";await loadCloud();}
-    catch(e){sessionStorage.removeItem("eb_cloud_token");CLOUD_TOKEN="";document.getElementById("loginScreen").style.display="flex";}
-  }else{
-    document.getElementById("loginScreen").style.display="flex";
-  }
-})();
-</script>
-
-<script>
-(function(){
-  "use strict";
-  const CORRECT_MPIN = "151515";
-
-  function showApp(){
-    const screen = document.getElementById("mpinLoginScreen");
-    if(screen) screen.remove();
-    document.body.classList.remove("mpin-locked");
-  }
-
-  function initMpin(){
-    const screen = document.getElementById("mpinLoginScreen");
-    const form = document.getElementById("mpinLoginForm");
-    const input = document.getElementById("mpinInput");
-    const error = document.getElementById("mpinError");
-
-    if(!screen || !form || !input) return;
-
-    // Always require MPIN when the page is opened/refreshed.
-    sessionStorage.removeItem("eb_authenticated");
-
-    setTimeout(function(){ input.focus(); }, 100);
-
-    input.addEventListener("input", function(){
-      input.value = input.value.replace(/\D/g,"").slice(0,6);
-      error.textContent = "";
-    });
-
-    form.addEventListener("submit", function(e){
-      e.preventDefault();
-
-      const value = String(input.value || "");
-
-      if(value === CORRECT_MPIN){
-        sessionStorage.setItem("eb_authenticated","1");
-        error.textContent = "";
-        showApp();
-
-        // If the page's own initialization needs a tick after the overlay disappears.
-        window.dispatchEvent(new Event("mpin:authenticated"));
-      }else{
-        error.textContent = "Incorrect MPIN. Please enter the correct 6-digit MPIN.";
-        input.value = "";
-        input.focus();
-      }
-    });
-  }
-
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", initMpin);
-  }else{
-    initMpin();
-  }
-})();
-</script>
-
-<script>
-(function(){
-  const DEFAULT_SHOPS = [
-    {shopId:"shop-1", name:"Shop 1", last:"", current:""},
-    {shopId:"shop-2", name:"Shop 2", last:"", current:""},
-    {shopId:"shop-3", name:"Shop 3", last:"", current:""},
-    {shopId:"shop-4", name:"Shop 4", last:"", current:""}
-  ];
-
-  function getShopState(){
-    try {
-      const raw = localStorage.getItem("eb_visible_shops");
-      const data = raw ? JSON.parse(raw) : null;
-      if(Array.isArray(data) && data.length >= 4) return data;
-    } catch(e){}
-    return DEFAULT_SHOPS.map(x => ({...x}));
-  }
-
-  window.ebShops = getShopState();
-
-  function esc(v){
-    return String(v ?? "").replace(/[&<>"']/g, c =>
-      ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])
-    );
-  }
-
-  window.renderShopsClearly = function(){
-    const box = document.getElementById("shops");
-    if(!box) return;
-
-    box.innerHTML = window.ebShops.map((s,i) => `
-      <div class="panel" style="border:1px solid #dfe5ef;border-radius:16px;padding:16px;background:#fff">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <h3 style="margin:0">Shop ${i+1}</h3>
-          ${i>=4 ? `<button type="button" onclick="removeShop(${i})" style="border:0;background:#fff0f0;color:#c33;border-radius:9px;padding:7px 10px">Remove</button>` : ""}
-        </div>
-        <label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Shop Name</label>
-        <input type="text" value="${esc(s.name)}"
-          oninput="ebShops[${i}].name=this.value;saveVisibleShops()"
-          style="width:100%;box-sizing:border-box;margin-bottom:10px">
-        <label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Last Meter Reading</label>
-        <input type="number" min="0" value="${esc(s.last)}"
-          oninput="ebShops[${i}].last=this.value;saveVisibleShops();syncShopToMain(${i})"
-          style="width:100%;box-sizing:border-box;margin-bottom:10px">
-        <label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Current Meter Reading</label>
-        <input type="number" min="0" value="${esc(s.current)}"
-          oninput="ebShops[${i}].current=this.value;saveVisibleShops();syncShopToMain(${i})"
-          style="width:100%;box-sizing:border-box">
-        <div id="shopResult${i}" style="margin-top:12px;padding:10px;border-radius:10px;background:#f5f7fb">
-          Units: 0
-        </div>
-      </div>
-    `).join("");
-  };
-
-  window.saveVisibleShops = function(){
-    try { localStorage.setItem("eb_visible_shops", JSON.stringify(window.ebShops)); } catch(e){}
-  };
-
-  window.addShop = function(){
-    const n = window.ebShops.length + 1;
-    window.ebShops.push({shopId:"shop-"+Date.now(), name:"Shop "+n, last:"", current:""});
-    saveVisibleShops();
-    renderShopsClearly();
-  };
-
-  window.removeShop = function(i){
-    if(window.ebShops.length <= 4) return;
-    window.ebShops.splice(i,1);
-    saveVisibleShops();
-    renderShopsClearly();
-  };
-
-  window.syncShopToMain = function(i){
-    const s = window.ebShops[i];
-    const units = (s.last !== "" && s.current !== "")
-      ? Math.max(0, Number(s.current)-Number(s.last)) : 0;
-    const el = document.getElementById("shopResult"+i);
-    if(el) el.textContent = "Units: " + units;
-    if(typeof window.calculate === "function"){
-      try { window.calculate(); } catch(e){}
+function loadCurrent(){
+  const saved=JSON.parse(localStorage.getItem(CURRENT)||"null");
+  if(saved && Date.now()-saved.savedAt<=30*24*60*60*1000){
+    document.getElementById("month").value=saved.month||todayMonth();
+    document.getElementById("rate").value=saved.rate??14;
+    document.getElementById("common").value=saved.common??0;
+    document.getElementById("mainBill").value=saved.mainBill??0;
+    document.getElementById("mainUnits").value=saved.mainUnits??0;
+    if(document.getElementById("businessName")) document.getElementById("businessName").value=saved.businessName||"EB Sub-Meter Bill";
+    
+    shops=saved.shops||shops;
+    if(!Array.isArray(shops)||shops.length<4){
+      while(shops.length<4) shops.push({name:"Shop "+(shops.length+1),last:"",current:""});
     }
+  }else{
+    document.getElementById("month").value=todayMonth();
+  }
+  if(shops.length!==4)shops=[
+  {name:"Shop 1",last:"",current:""},
+  {name:"Shop 2",last:"",current:""},
+  {name:"Shop 3",last:"",current:""},
+  {name:"Shop 4",last:"",current:""}
+];
+  render();
+}
+document.getElementById("month").addEventListener("change",function(){
+  // If the selected month has a saved record, offer its values; otherwise retain current values.
+  const r=getRecords().find(x=>x.month===this.value);
+  if(r)loadRecord(r.id); else autoSaveCurrent();
+});
+if(!showPaymentPage()){
+  loadCurrent();
+  renderHistory();
+}
+</script>
+
+<script>
+(function(){
+  const API = window.EB_CLOUD.api;
+  const CLOUD_KEY = "eb_cloud_state_v2";
+  let cloudBusy = false;
+
+  async function cloudPost(payload){
+    const res = await fetch(API, {
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(payload)
+    });
+    const text = await res.text();
+    try { return JSON.parse(text); }
+    catch(e){ throw new Error("Cloud API returned invalid response."); }
+  }
+
+  async function loadCloud(){
+    if(cloudBusy) return null;
+    cloudBusy = true;
+    try{
+      const result = await cloudPost({action:"getData"});
+      if(!result || !result.success) throw new Error(result && result.error || "Cloud load failed.");
+      localStorage.setItem(CLOUD_KEY, JSON.stringify(result));
+      window.EB_CLOUD_DATA = result;
+      return result;
+    }catch(err){
+      console.error("Cloud load:", err);
+      return null;
+    }finally{
+      cloudBusy = false;
+    }
+  }
+
+  async function saveCloudCurrent(){
+    if(!window.ebShops || !Array.isArray(window.ebShops)) return;
+    try{
+      await cloudPost({
+        action:"saveCurrent",
+        shops:window.ebShops.map((s,i)=>({
+          shopId:s.shopId || ("shop-"+(i+1)),
+          name:s.name || ("Shop "+(i+1)),
+          last:s.last ?? "",
+          current:s.current ?? ""
+        }))
+      });
+    }catch(err){
+      console.error("Cloud save current:", err);
+    }
+  }
+
+  async function saveCloudMonth(month, extra){
+    if(!window.ebShops || !Array.isArray(window.ebShops)) return null;
+
+    const payload = Object.assign({
+      action:"saveMonth",
+      month:month,
+      shops:window.ebShops.map((s,i)=>({
+        shopId:s.shopId || ("shop-"+(i+1)),
+        name:s.name || ("Shop "+(i+1)),
+        last:s.last ?? "",
+        current:s.current ?? ""
+      }))
+    }, extra || {});
+
+    return await cloudPost(payload);
+  }
+
+  async function createCloudBill(shop, details){
+    const payload = Object.assign({
+      action:"createBill",
+      shopId:shop.shopId,
+      shopName:shop.name,
+      lastReading:Number(shop.last || 0),
+      currentReading:Number(shop.current || 0),
+      units:Math.max(0,Number(shop.current || 0)-Number(shop.last || 0)),
+      rate:Number(details && details.rate || 0),
+      amount:Number(details && details.amount || 0),
+      month:(details && details.month) || ""
+    }, details || {});
+    return await cloudPost(payload);
+  }
+
+  window.EBCloud = {
+    load:loadCloud,
+    saveCurrent:saveCloudCurrent,
+    saveMonth:saveCloudMonth,
+    createBill:createCloudBill
   };
 
-  // Render immediately and again after other app scripts initialize.
-  function boot(){
-    renderShopsClearly();
-    window.ebShops.forEach((_,i)=>syncShopToMain(i));
-  }
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", boot);
-  } else {
-    boot();
-  }
-  setTimeout(boot, 500);
-  setTimeout(boot, 1500);
+  // Pull cloud data after the existing UI has initialized.
+  window.addEventListener("load", async function(){
+    const data = await loadCloud();
+    if(!data) return;
+
+    // Keep the same page/UI and update the visible shop state.
+    if(Array.isArray(data.shops) && data.shops.length >= 4){
+      window.ebShops = data.shops.map((s,i)=>({
+        shopId:s.shopId || ("shop-"+(i+1)),
+        name:s.name || ("Shop "+(i+1)),
+        last:s.last ?? "",
+        current:s.current ?? ""
+      }));
+
+      if(typeof window.renderShopsClearly === "function"){
+        window.renderShopsClearly();
+      }
+    }
+  });
+
+  // Cloud-save whenever the existing Add/reading UI changes.
+  const oldSave = window.saveVisibleShops;
+  window.saveVisibleShops = async function(){
+    if(typeof oldSave === "function") oldSave.apply(this,arguments);
+    await saveCloudCurrent();
+  };
 })();
 </script>
 </body>
